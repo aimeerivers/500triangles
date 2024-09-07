@@ -53,42 +53,40 @@ const averageColor = calculateAverageColor(referenceCanvas);
 const numberOfTriangles = 500;
 
 // Genetic Algorithm Parameters
-const populationSize = 100;
-const generations = 100;
-const initialMutationRate = 0.2;
-const eliteSize = 5;
+const populationSize = 50;
+const generations = 9999;
+const initialMutationRate = 0.3;
+const eliteSize = 10;
 
 let mutationRate = initialMutationRate;
 
 let population: Individual[] = generateInitialPopulation(populationSize);
-let bestYet: Individual = population[0];
+
+let bestYet: Individual = { triangles: [], fitness: Infinity };
 
 for (let generation = 0; generation < generations; generation++) {
+  console.log("\nGeneration", generation + 1);
   // Evaluate Fitness
   population = evaluateFitness(population);
 
   // Select Best Individuals
   const bestIndividuals = selectBestIndividuals(population, eliteSize);
+  const bestInGeneration = bestIndividuals[0];
+  console.log("Best Fitness Score", bestInGeneration.fitness);
+  drawIndividual(bestInGeneration);
+  await saveOutput(canvas, `best_from_generation_${(generation + 1).toString().padStart(4, "0")}.png`);
 
   // Preserve the best individual from all generations
-  if (bestIndividuals[0].fitness < bestYet.fitness) {
-    bestYet = bestIndividuals[0];
+  if (bestInGeneration.fitness < bestYet.fitness) {
+    bestYet = deepCopy(bestInGeneration);
     drawIndividual(bestYet);
     await saveOutput(canvas, "best_yet.png");
     mutationRate *= 0.99; // Decrease mutation rate by 1%
     console.log("Reducing mutation rate...", mutationRate);
   }
 
-  // Save the best from generation
-  drawIndividual(bestIndividuals[0]);
-  await saveOutput(canvas, `best_from_generation_${(generation + 1).toString().padStart(4, "0")}.png`);
-
-  // Log the best fitness score of the current generation
-  console.log(`Generation ${generation + 1}: Best Fitness Score = ${bestIndividuals[0].fitness}`);
-
   // Generate Offspring
-  population = generateOffspring(bestIndividuals.concat(bestYet), populationSize, mutationRate);
-  console.log("New population size:", population.length);
+  population = generateOffspring(bestIndividuals.concat(bestYet), populationSize, mutationRate, eliteSize);
 }
 
 function generateInitialPopulation(size: number): Individual[] {
@@ -104,9 +102,20 @@ function selectBestIndividuals(population: Individual[], eliteSize: number): Ind
   return population.sort((a, b) => a.fitness - b.fitness).slice(0, eliteSize);
 }
 
-function generateOffspring(bestIndividuals: Individual[], populationSize: number, mutationRate: number): Individual[] {
+function generateOffspring(
+  bestIndividuals: Individual[],
+  populationSize: number,
+  mutationRate: number,
+  eliteSize: number
+): Individual[] {
   const offspring: Individual[] = [];
 
+  // Preserve the elite individuals
+  for (let i = 0; i < eliteSize; i++) {
+    offspring.push(bestIndividuals[i]);
+  }
+
+  // Generate the rest of the population
   while (offspring.length < populationSize - 1) {
     const parent1 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
     const parent2 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
@@ -193,4 +202,8 @@ function drawTriangle(triangle: Triangle): void {
 
   ctx.fillStyle = `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.opacity})`;
   ctx.fill();
+}
+
+function deepCopy(individual: Individual): Individual {
+  return JSON.parse(JSON.stringify(individual));
 }
