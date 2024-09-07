@@ -1,0 +1,31 @@
+{
+  "name": "500triangles",
+  "version": "0.0.1",
+  "description": "Generate any image using 500 triangles and a genetic algorithm",
+  "homepage": "https://github.com/aimeerivers/500triangles#readme",
+  "bugs": {
+    "url": "https://github.com/aimeerivers/500triangles/issues"
+  },
+  "license": "ISC",
+  "author": "aimee rivers",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aimeerivers/500triangles.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --ext .ts,.js --fix",
+    "lint:check": "eslint . --ext .ts,.js",
+    "package:lint": "npx npm-package-json-lint .",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "eslint-config-plus-prettier": "1.5.11",
+    "npm-package-json-lint": "8.0.0"
+  },
+  "prettier": "eslint-config-plus-prettier/.prettierrc.json"
+}

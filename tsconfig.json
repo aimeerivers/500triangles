@@ -1,0 +1,8 @@
+{
+  "extends": "eslint-config-plus-prettier/tsconfig.json",
+  "include": ["src"], // Files to be compiled
+  "compilerOptions": {
+    "outDir": "dist", // Compiled directory
+    "lib": ["dom", "esnext"] // Include 'dom' and 'esnext' libraries
+  }
+}
