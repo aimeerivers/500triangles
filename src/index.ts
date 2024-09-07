@@ -55,8 +55,8 @@ const numberOfTriangles = 500;
 // Genetic Algorithm Parameters
 const populationSize = 100;
 const generations = 100;
-const initialMutationRate = 0.5;
-const eliteSize = 4;
+const initialMutationRate = 0.2;
+const eliteSize = 5;
 
 let mutationRate = initialMutationRate;
 
@@ -107,13 +107,16 @@ function selectBestIndividuals(population: Individual[], eliteSize: number): Ind
 function generateOffspring(bestIndividuals: Individual[], populationSize: number, mutationRate: number): Individual[] {
   const offspring: Individual[] = [];
 
-  while (offspring.length < populationSize) {
+  while (offspring.length < populationSize - 1) {
     const parent1 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
     const parent2 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
     const child = crossover(parent1, parent2);
     mutate(child, mutationRate);
     offspring.push(child);
   }
+
+  const supriseNewcomer: Individual = { triangles: generateRandomTriangles(numberOfTriangles), fitness: Infinity };
+  offspring.push(supriseNewcomer);
 
   return offspring;
 }
