@@ -27,19 +27,26 @@ ctx.fillStyle = "white";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 interface Triangle {
-  x: number;
-  y: number;
-  size: number;
+  points: Point[];
+  color: Color;
+}
+
+type Color = {
   red: number;
   green: number;
   blue: number;
   opacity: number;
-}
+};
+
+type Point = {
+  x: number;
+  y: number;
+};
 
 const triangles = generateRandomTriangles(500);
 
 for (const triangle of triangles) {
-  drawTriangle(triangle.x, triangle.y, triangle.size, triangle.red, triangle.green, triangle.blue, triangle.opacity);
+  drawTriangle(triangle);
 }
 
 saveOutput("canvas_output.png");
@@ -49,37 +56,36 @@ function generateRandomTriangles(count: number): Triangle[] {
 
   for (let i = 0; i < count; i++) {
     triangles.push({
-      x: Math.floor(Math.random() * canvas.width),
-      y: Math.floor(Math.random() * canvas.height),
-      size: Math.floor(Math.random() * 200),
-      red: Math.floor(Math.random() * 256),
-      green: Math.floor(Math.random() * 256),
-      blue: Math.floor(Math.random() * 256),
-      opacity: parseFloat((Math.random() * 0.5).toFixed(2)),
+      points: [
+        { x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height) },
+        { x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height) },
+        { x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height) },
+      ],
+      color: {
+        red: Math.floor(Math.random() * 256),
+        green: Math.floor(Math.random() * 256),
+        blue: Math.floor(Math.random() * 256),
+        opacity: parseFloat((Math.random() * 0.5).toFixed(2)),
+      },
     });
   }
 
   return triangles;
 }
 
-function drawTriangle(
-  x: number,
-  y: number,
-  size: number,
-  red: number,
-  green: number,
-  blue: number,
-  opacity: number
-): void {
+function drawTriangle(triangle: Triangle): void {
+  const points = triangle.points;
+  const color = triangle.color;
+
   ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x + size, y);
-  ctx.lineTo(x + size / 2, y - size);
+  ctx.moveTo(points[0].x, points[0].y);
+  ctx.lineTo(points[1].x, points[1].y);
+  ctx.lineTo(points[2].x, points[2].y);
   ctx.closePath();
 
   // Set fill color with opacity
 
-  ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+  ctx.fillStyle = `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.opacity})`;
   ctx.fill();
 }
 
