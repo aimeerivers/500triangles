@@ -2,7 +2,7 @@ import { loadImage } from "canvas";
 import { JSDOM } from "jsdom";
 
 import { calculateMSE } from "./fitness.js";
-import { Color, Point, randomColor, randomPoint, saveOutputImage, saveOutputJSON } from "./util.js";
+import { appendLog, Color, Point, randomColor, randomPoint, saveOutputImage, saveOutputJSON } from "./util.js";
 
 interface Triangle {
   points: Point[];
@@ -13,6 +13,8 @@ interface Individual {
   triangles: Triangle[];
   fitness: number;
 }
+
+await appendLog(["Generation", "Fitness", "Mutation rate"], "log.csv");
 
 const { window } = new JSDOM(`
 <!DOCTYPE html>
@@ -84,7 +86,8 @@ for (let generation = 0; generation < generations; generation++) {
     drawIndividual(bestYet);
     await saveOutputImage(canvas, "best_yet.png");
     await saveOutputJSON(bestYet, "best_yet.json");
-    mutationRate *= 0.990; // Decrease mutation rate by 0.1%
+    await appendLog([generation + 1, bestYet.fitness, mutationRate], "log.csv");
+    mutationRate *= 0.999; // Decrease mutation rate by 0.1%
     console.log("Reducing mutation rate...", mutationRate);
   }
 
