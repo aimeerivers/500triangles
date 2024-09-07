@@ -75,7 +75,7 @@ for (let generation = 0; generation < generations; generation++) {
 
   if (generation % 10 === 0) {
     drawIndividual(bestInGeneration);
-    await saveOutputImage(canvas, `best_from_generation_${(generation + 1).toString().padStart(4, "0")}.png`);
+    await saveOutputImage(canvas, `generation_${generation.toString().padStart(4, "0")}.png`);
   }
 
   console.log("Best Fitness Score", bestInGeneration.fitness);
@@ -86,7 +86,7 @@ for (let generation = 0; generation < generations; generation++) {
     drawIndividual(bestYet);
     await saveOutputImage(canvas, "best_yet.png");
     await saveOutputJSON(bestYet, "best_yet.json");
-    await appendLog([generation + 1, bestYet.fitness, mutationRate], "log.csv");
+    await appendLog([generation, bestYet.fitness, mutationRate], "log.csv");
     mutationRate *= 0.999; // Decrease mutation rate by 0.1%
     console.log("Reducing mutation rate...", mutationRate);
   }
