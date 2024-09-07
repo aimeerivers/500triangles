@@ -81,7 +81,7 @@ for (let generation = 0; generation < generations; generation++) {
 
   // Save the best from generation
   drawIndividual(bestIndividuals[0]);
-  await saveOutput(canvas, `best_from_generation_${generation + 1}.png`);
+  await saveOutput(canvas, `best_from_generation_${(generation + 1).toString().padStart(4, "0")}.png`);
 
   // Log the best fitness score of the current generation
   console.log(`Generation ${generation + 1}: Best Fitness Score = ${bestIndividuals[0].fitness}`);
