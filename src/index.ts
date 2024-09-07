@@ -1,6 +1,8 @@
 import { writeFile } from "fs";
 import { JSDOM } from "jsdom";
 
+import { Color, Point, randomColor, randomPoint } from "./utl";
+
 // Create a JSDOM instance
 const { window } = new JSDOM(`
 <!DOCTYPE html>
@@ -31,18 +33,6 @@ interface Triangle {
   color: Color;
 }
 
-type Color = {
-  red: number;
-  green: number;
-  blue: number;
-  opacity: number;
-};
-
-type Point = {
-  x: number;
-  y: number;
-};
-
 const triangles = generateRandomTriangles(500);
 
 for (const triangle of triangles) {
@@ -56,7 +46,7 @@ function generateRandomTriangles(count: number): Triangle[] {
 
   for (let i = 0; i < count; i++) {
     triangles.push({
-      points: [randomPoint(), randomPoint(), randomPoint()],
+      points: [randomPoint(canvas), randomPoint(canvas), randomPoint(canvas)],
       color: randomColor(),
     });
   }
@@ -89,20 +79,4 @@ function saveOutput(fileName: string): void {
       console.log(`Canvas output saved as ${fileName}`);
     }
   });
-}
-
-function randomPoint(): Point {
-  return {
-    x: Math.floor(Math.random() * (canvas.width + 100)) - 50,
-    y: Math.floor(Math.random() * (canvas.height + 100)) - 50,
-  };
-}
-
-function randomColor(): Color {
-  return {
-    red: Math.floor(Math.random() * 256),
-    green: Math.floor(Math.random() * 256),
-    blue: Math.floor(Math.random() * 256),
-    opacity: parseFloat((Math.random() * 0.1).toFixed(3)),
-  };
 }
