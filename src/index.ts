@@ -2,7 +2,7 @@ import { loadImage } from "canvas";
 import { JSDOM } from "jsdom";
 
 import { calculateMSE } from "./fitness.js";
-import { Color, Point, randomColor, randomPoint, saveOutput } from "./util.js";
+import { Color, Point, randomColor, randomPoint, saveOutputImage, saveOutputJSON } from "./util.js";
 
 interface Triangle {
   points: Point[];
@@ -70,16 +70,21 @@ for (let generation = 0; generation < generations; generation++) {
   // Select Best Individuals
   const bestIndividuals = selectBestIndividuals(population, eliteSize);
   const bestInGeneration = bestIndividuals[0];
+
+  if (generation % 10 === 0) {
+    drawIndividual(bestInGeneration);
+    await saveOutputImage(canvas, `best_from_generation_${(generation + 1).toString().padStart(4, "0")}.png`);
+  }
+
   console.log("Best Fitness Score", bestInGeneration.fitness);
-  drawIndividual(bestInGeneration);
-  await saveOutput(canvas, `best_from_generation_${(generation + 1).toString().padStart(4, "0")}.png`);
 
   // Preserve the best individual from all generations
-  if (bestInGeneration.fitness < bestYet.fitness) {
+  if (bestInGeneration.fitness <= bestYet.fitness) {
     bestYet = deepCopy(bestInGeneration);
     drawIndividual(bestYet);
-    await saveOutput(canvas, "best_yet.png");
-    mutationRate *= 0.99; // Decrease mutation rate by 1%
+    await saveOutputImage(canvas, "best_yet.png");
+    await saveOutputJSON(bestYet, "best_yet.json");
+    mutationRate *= 0.990; // Decrease mutation rate by 0.1%
     console.log("Reducing mutation rate...", mutationRate);
   }
 

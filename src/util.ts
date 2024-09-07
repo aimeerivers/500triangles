@@ -28,12 +28,15 @@ export function randomColor(): Color {
   };
 }
 
-export async function saveOutput(canvas: HTMLCanvasElement, filename: string): Promise<void> {
+export async function saveOutputImage(canvas: HTMLCanvasElement, filename: string): Promise<void> {
   const dataURL = canvas.toDataURL("image/png");
   const base64Data = dataURL.replace(/^data:image\/png;base64,/, "");
 
   const outputDir = "output";
-  await mkdir(outputDir, { recursive: true });
-
   await writeFile(`${outputDir}/${filename}`, base64Data, "base64");
+}
+
+export async function saveOutputJSON(data: unknown, filename: string): Promise<void> {
+  const outputDir = "output";
+  await writeFile(`${outputDir}/${filename}`, JSON.stringify(data, null, 2));
 }
