@@ -1,3 +1,5 @@
+import { writeFile } from "fs";
+
 export type Color = {
   red: number;
   green: number;
@@ -24,4 +26,17 @@ export function randomColor(): Color {
     blue: Math.floor(Math.random() * 256),
     opacity: parseFloat((Math.random() * 0.1).toFixed(3)),
   };
+}
+
+export function saveOutput(canvas: HTMLCanvasElement, fileName: string): void {
+  const dataURL = canvas.toDataURL("image/png");
+  const base64Data = dataURL.replace(/^data:image\/png;base64,/, "");
+
+  writeFile(fileName, base64Data, "base64", (err) => {
+    if (err) {
+      console.error("Error saving the image:", err);
+    } else {
+      console.log(`Canvas output saved as ${fileName}`);
+    }
+  });
 }

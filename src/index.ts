@@ -1,9 +1,7 @@
-import { writeFile } from "fs";
 import { JSDOM } from "jsdom";
 
-import { Color, Point, randomColor, randomPoint } from "./utl";
+import { Color, Point, randomColor, randomPoint, saveOutput } from "./utl";
 
-// Create a JSDOM instance
 const { window } = new JSDOM(`
 <!DOCTYPE html>
 <html lang="en">
@@ -18,13 +16,11 @@ const { window } = new JSDOM(`
 </html>
 `);
 
-// Extract the document and other necessary objects from the JSDOM window
 const { document } = window;
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 
-// Set the canvas background color to white
 ctx.fillStyle = "white";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -39,7 +35,7 @@ for (const triangle of triangles) {
   drawTriangle(triangle);
 }
 
-saveOutput("canvas_output.png");
+saveOutput(canvas, "canvas_output.png");
 
 function generateRandomTriangles(count: number): Triangle[] {
   const triangles: Triangle[] = [];
@@ -66,17 +62,4 @@ function drawTriangle(triangle: Triangle): void {
 
   ctx.fillStyle = `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.opacity})`;
   ctx.fill();
-}
-
-function saveOutput(fileName: string): void {
-  const dataURL = canvas.toDataURL("image/png");
-  const base64Data = dataURL.replace(/^data:image\/png;base64,/, "");
-
-  writeFile(fileName, base64Data, "base64", (err) => {
-    if (err) {
-      console.error("Error saving the image:", err);
-    } else {
-      console.log(`Canvas output saved as ${fileName}`);
-    }
-  });
 }
