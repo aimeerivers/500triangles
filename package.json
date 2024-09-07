@@ -20,10 +20,15 @@
     "lint": "eslint . --ext .ts,.js --fix",
     "lint:check": "eslint . --ext .ts,.js",
     "package:lint": "npx npm-package-json-lint .",
-    "start": "node dist/index.js",
+    "start": "node --no-deprecation dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "canvas": "2.11.2",
+    "jsdom": "25.0.0"
+  },
   "devDependencies": {
+    "@types/jsdom": "21.1.7",
     "eslint-config-plus-prettier": "1.5.11",
     "npm-package-json-lint": "8.0.0"
   },
