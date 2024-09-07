@@ -2,7 +2,7 @@ import { loadImage } from "canvas";
 import { JSDOM } from "jsdom";
 
 import { calculateMSE } from "./fitness.js";
-import { Color, Point, randomColor, randomPoint, saveOutput } from "./util.js";
+import { calculateAverageColor, Color, Point, randomColor, randomPoint, saveOutput } from "./util.js";
 
 const { window } = new JSDOM(`
 <!DOCTYPE html>
@@ -13,8 +13,8 @@ const { window } = new JSDOM(`
   <title>Headless Canvas</title>
 </head>
 <body>
-  <canvas id="canvas" width="800" height="600"></canvas>
-  <canvas id="referenceCanvas" width="800" height="600"></canvas>
+  <canvas id="canvas"></canvas>
+  <canvas id="referenceCanvas"></canvas>
 </body>
 </html>
 `);
@@ -27,11 +27,21 @@ const ctx = canvas.getContext("2d")!;
 const referenceCanvas = document.getElementById("referenceCanvas") as HTMLCanvasElement;
 const referenceCtx = referenceCanvas.getContext("2d")!;
 
-ctx.fillStyle = "white";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+const referenceImage = await loadImage("reference_image.png");
+const referenceImageSource = referenceImage as unknown as CanvasImageSource;
 
-const referenceImage = (await loadImage("reference_image.png")) as unknown as CanvasImageSource;
-referenceCtx.drawImage(referenceImage, 0, 0, canvas.width, canvas.height);
+canvas.width = referenceImage.width;
+canvas.height = referenceImage.height;
+
+referenceCanvas.width = referenceImage.width;
+referenceCanvas.height = referenceImage.height;
+
+referenceCtx.drawImage(referenceImageSource, 0, 0, referenceImage.width, referenceImage.height);
+
+const averageColor = calculateAverageColor(referenceCanvas);
+
+ctx.fillStyle = `rgba(${averageColor.red}, ${averageColor.green}, ${averageColor.blue}, ${averageColor.opacity})`;
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 interface Triangle {
   points: Point[];
