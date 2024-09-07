@@ -2,7 +2,7 @@ import { loadImage } from "canvas";
 import { JSDOM } from "jsdom";
 
 import { calculateMSE } from "./fitness.js";
-import { calculateAverageColor, Color, Point, randomColor, randomPoint, saveOutput } from "./util.js";
+import { Color, Point, randomColor, randomPoint, saveOutput } from "./util.js";
 
 interface Triangle {
   points: Point[];
@@ -48,8 +48,6 @@ referenceCanvas.height = referenceImage.height;
 
 referenceCtx.drawImage(referenceImageSource, 0, 0, referenceImage.width, referenceImage.height);
 
-const averageColor = calculateAverageColor(referenceCanvas);
-
 const numberOfTriangles = 500;
 
 // Genetic Algorithm Parameters
@@ -86,7 +84,7 @@ for (let generation = 0; generation < generations; generation++) {
   }
 
   // Generate Offspring
-  population = generateOffspring(bestIndividuals.concat(bestYet), populationSize, mutationRate, eliteSize);
+  population = generateOffspring([bestYet, ...bestIndividuals], populationSize, mutationRate, eliteSize);
 }
 
 function generateInitialPopulation(size: number): Individual[] {
@@ -115,8 +113,8 @@ function generateOffspring(
     offspring.push(bestIndividuals[i]);
   }
 
-  // Generate the rest of the population
-  while (offspring.length < populationSize - 1) {
+  // Generate the rest of the population, leave some room for new individuals
+  while (offspring.length < populationSize - 10) {
     const parent1 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
     const parent2 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
     const child = crossover(parent1, parent2);
@@ -124,8 +122,11 @@ function generateOffspring(
     offspring.push(child);
   }
 
-  const supriseNewcomer: Individual = { triangles: generateRandomTriangles(numberOfTriangles), fitness: Infinity };
-  offspring.push(supriseNewcomer);
+  // Add some brand new ones, they may be better
+  while (offspring.length < populationSize) {
+    const triangles = generateRandomTriangles(numberOfTriangles);
+    offspring.push({ triangles, fitness: Infinity });
+  }
 
   return offspring;
 }
@@ -143,17 +144,37 @@ function crossover(parent1: Individual, parent2: Individual): Individual {
 }
 
 function mutate(individual: Individual, mutationRate: number): void {
-  for (const triangle of individual.triangles) {
+  for (let i = 0; i < individual.triangles.length; i++) {
     if (Math.random() < mutationRate) {
-      // Small perturbations to the existing points and color
-      for (const point of triangle.points) {
-        point.x += Math.floor(Math.random() * 21) - 10; // Adjust x by -10 to 10
-        point.y += Math.floor(Math.random() * 21) - 10; // Adjust y by -10 to 10
+      if (Math.random() < 0.5) {
+        // Small perturbations to the existing points and color
+        for (const point of individual.triangles[i].points) {
+          point.x += Math.floor(Math.random() * 21) - 10; // Adjust x by -10 to 10
+          point.y += Math.floor(Math.random() * 21) - 10; // Adjust y by -10 to 10
+        }
+        individual.triangles[i].color.red = Math.min(
+          255,
+          Math.max(0, individual.triangles[i].color.red + Math.floor(Math.random() * 21) - 10)
+        );
+        individual.triangles[i].color.green = Math.min(
+          255,
+          Math.max(0, individual.triangles[i].color.green + Math.floor(Math.random() * 21) - 10)
+        );
+        individual.triangles[i].color.blue = Math.min(
+          255,
+          Math.max(0, individual.triangles[i].color.blue + Math.floor(Math.random() * 21) - 10)
+        );
+        individual.triangles[i].color.opacity = Math.min(
+          1,
+          Math.max(0, individual.triangles[i].color.opacity + Math.random() * 0.1 - 0.05)
+        );
+      } else {
+        // Generate a completely new triangle
+        individual.triangles[i] = {
+          points: [randomPoint(canvas), randomPoint(canvas), randomPoint(canvas)],
+          color: randomColor(),
+        };
       }
-      triangle.color.red = Math.min(255, Math.max(0, triangle.color.red + Math.floor(Math.random() * 21) - 10));
-      triangle.color.green = Math.min(255, Math.max(0, triangle.color.green + Math.floor(Math.random() * 21) - 10));
-      triangle.color.blue = Math.min(255, Math.max(0, triangle.color.blue + Math.floor(Math.random() * 21) - 10));
-      triangle.color.opacity = Math.min(0.1, Math.max(0, triangle.color.opacity + Math.random() * 0.1 - 0.05));
     }
   }
 }
@@ -181,8 +202,6 @@ function evaluateFitness(population: Individual[]): Individual[] {
 
 function drawIndividual(individual: Individual): void {
   ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = `rgba(${averageColor.red}, ${averageColor.green}, ${averageColor.blue}, ${averageColor.opacity})`;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   for (const triangle of individual.triangles) {

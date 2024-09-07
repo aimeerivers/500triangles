@@ -28,31 +28,6 @@ export function randomColor(): Color {
   };
 }
 
-export function calculateAverageColor(canvas: HTMLCanvasElement): Color {
-  const ctx = canvas.getContext("2d")!;
-  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-  let red = 0,
-    green = 0,
-    blue = 0,
-    alpha = 0;
-  const pixelCount = imgData.length / 4;
-
-  for (let i = 0; i < imgData.length; i += 4) {
-    red += imgData[i];
-    green += imgData[i + 1];
-    blue += imgData[i + 2];
-    alpha += imgData[i + 3];
-  }
-
-  return {
-    red: Math.floor(red / pixelCount),
-    green: Math.floor(green / pixelCount),
-    blue: Math.floor(blue / pixelCount),
-    opacity: parseFloat((alpha / pixelCount / 255).toFixed(2)),
-  };
-}
-
 export async function saveOutput(canvas: HTMLCanvasElement, filename: string): Promise<void> {
   const dataURL = canvas.toDataURL("image/png");
   const base64Data = dataURL.replace(/^data:image\/png;base64,/, "");
