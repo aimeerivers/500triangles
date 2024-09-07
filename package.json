@@ -13,6 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/aimeerivers/500triangles.git"
   },
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "format": "prettier --write .",
