@@ -1,4 +1,4 @@
-import { writeFile } from "fs";
+import { mkdir, writeFile } from "fs/promises";
 
 export type Color = {
   red: number;
@@ -57,15 +57,8 @@ export async function saveOutput(canvas: HTMLCanvasElement, filename: string): P
   const dataURL = canvas.toDataURL("image/png");
   const base64Data = dataURL.replace(/^data:image\/png;base64,/, "");
 
-  return new Promise((resolve, reject) => {
-    writeFile(filename, base64Data, "base64", (err) => {
-      if (err) {
-        console.error("Error saving the image:", err);
-        reject(err);
-      } else {
-        console.log(`Canvas output saved as ${filename}`);
-        resolve();
-      }
-    });
-  });
+  const outputDir = "output";
+  await mkdir(outputDir, { recursive: true });
+
+  await writeFile(`${outputDir}/${filename}`, base64Data, "base64");
 }

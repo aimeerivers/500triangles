@@ -50,14 +50,18 @@ referenceCtx.drawImage(referenceImageSource, 0, 0, referenceImage.width, referen
 
 const averageColor = calculateAverageColor(referenceCanvas);
 
-// Genetic Algorithm Parameters
 const numberOfTriangles = 500;
+
+// Genetic Algorithm Parameters
 const populationSize = 100;
 const generations = 100;
-const mutationRate = 0.1;
-const eliteSize = 5;
+const initialMutationRate = 0.1;
+const eliteSize = 4;
+
+let mutationRate = initialMutationRate;
 
 let population: Individual[] = generateInitialPopulation(populationSize);
+let bestYet: Individual = population[0];
 
 for (let generation = 0; generation < generations; generation++) {
   // Evaluate Fitness
@@ -66,15 +70,25 @@ for (let generation = 0; generation < generations; generation++) {
   // Select Best Individuals
   const bestIndividuals = selectBestIndividuals(population, eliteSize);
 
-  // Generate Offspring
-  population = generateOffspring(bestIndividuals, populationSize, mutationRate);
-
-  // Log the best fitness score of the current generation
-  console.log(`Generation ${generation + 1}: Best Fitness Score = ${bestIndividuals[0].fitness}`);
+  // Preserve the best individual from all generations
+  if (bestIndividuals[0].fitness < bestYet.fitness) {
+    bestYet = bestIndividuals[0];
+    drawIndividual(bestYet);
+    await saveOutput(canvas, "best_yet.png");
+    mutationRate *= 0.99; // Decrease mutation rate by 1%
+    console.log("Reducing mutation rate...", mutationRate);
+  }
 
   // Save the best from generation
   drawIndividual(bestIndividuals[0]);
   await saveOutput(canvas, `best_from_generation_${generation + 1}.png`);
+
+  // Log the best fitness score of the current generation
+  console.log(`Generation ${generation + 1}: Best Fitness Score = ${bestIndividuals[0].fitness}`);
+
+  // Generate Offspring
+  population = generateOffspring(bestIndividuals.concat(bestYet), populationSize, mutationRate);
+  console.log("New population size:", population.length);
 }
 
 function generateInitialPopulation(size: number): Individual[] {
@@ -105,16 +119,29 @@ function generateOffspring(bestIndividuals: Individual[], populationSize: number
 }
 
 function crossover(parent1: Individual, parent2: Individual): Individual {
-  const crossoverPoint = Math.floor(Math.random() * parent1.triangles.length);
-  const triangles = parent1.triangles.slice(0, crossoverPoint).concat(parent2.triangles.slice(crossoverPoint));
+  const triangles: Triangle[] = [];
+  for (let i = 0; i < parent1.triangles.length; i++) {
+    if (Math.random() < 0.5) {
+      triangles.push(parent1.triangles[i]);
+    } else {
+      triangles.push(parent2.triangles[i]);
+    }
+  }
   return { triangles, fitness: Infinity };
 }
 
 function mutate(individual: Individual, mutationRate: number): void {
   for (const triangle of individual.triangles) {
     if (Math.random() < mutationRate) {
-      triangle.points = [randomPoint(canvas), randomPoint(canvas), randomPoint(canvas)];
-      triangle.color = randomColor();
+      // Small perturbations to the existing points and color
+      for (const point of triangle.points) {
+        point.x += Math.floor(Math.random() * 21) - 10; // Adjust x by -10 to 10
+        point.y += Math.floor(Math.random() * 21) - 10; // Adjust y by -10 to 10
+      }
+      triangle.color.red = Math.min(255, Math.max(0, triangle.color.red + Math.floor(Math.random() * 21) - 10));
+      triangle.color.green = Math.min(255, Math.max(0, triangle.color.green + Math.floor(Math.random() * 21) - 10));
+      triangle.color.blue = Math.min(255, Math.max(0, triangle.color.blue + Math.floor(Math.random() * 21) - 10));
+      triangle.color.opacity = Math.min(0.1, Math.max(0, triangle.color.opacity + Math.random() * 0.1 - 0.05));
     }
   }
 }
