@@ -65,7 +65,7 @@ function generateRandomTriangles(count: number): Triangle[] {
         red: Math.floor(Math.random() * 256),
         green: Math.floor(Math.random() * 256),
         blue: Math.floor(Math.random() * 256),
-        opacity: parseFloat((Math.random() * 0.5).toFixed(2)),
+        opacity: parseFloat((Math.random() * 0.1).toFixed(3)),
       },
     });
   }
