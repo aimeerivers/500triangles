@@ -56,17 +56,8 @@ function generateRandomTriangles(count: number): Triangle[] {
 
   for (let i = 0; i < count; i++) {
     triangles.push({
-      points: [
-        { x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height) },
-        { x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height) },
-        { x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height) },
-      ],
-      color: {
-        red: Math.floor(Math.random() * 256),
-        green: Math.floor(Math.random() * 256),
-        blue: Math.floor(Math.random() * 256),
-        opacity: parseFloat((Math.random() * 0.1).toFixed(3)),
-      },
+      points: [randomPoint(), randomPoint(), randomPoint()],
+      color: randomColor(),
     });
   }
 
@@ -83,8 +74,6 @@ function drawTriangle(triangle: Triangle): void {
   ctx.lineTo(points[2].x, points[2].y);
   ctx.closePath();
 
-  // Set fill color with opacity
-
   ctx.fillStyle = `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.opacity})`;
   ctx.fill();
 }
@@ -100,4 +89,20 @@ function saveOutput(fileName: string): void {
       console.log(`Canvas output saved as ${fileName}`);
     }
   });
+}
+
+function randomPoint(): Point {
+  return {
+    x: Math.floor(Math.random() * (canvas.width + 100)) - 50,
+    y: Math.floor(Math.random() * (canvas.height + 100)) - 50,
+  };
+}
+
+function randomColor(): Color {
+  return {
+    red: Math.floor(Math.random() * 256),
+    green: Math.floor(Math.random() * 256),
+    blue: Math.floor(Math.random() * 256),
+    opacity: parseFloat((Math.random() * 0.1).toFixed(3)),
+  };
 }
