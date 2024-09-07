@@ -53,15 +53,19 @@ export function calculateAverageColor(canvas: HTMLCanvasElement): Color {
   };
 }
 
-export function saveOutput(canvas: HTMLCanvasElement, fileName: string): void {
+export async function saveOutput(canvas: HTMLCanvasElement, filename: string): Promise<void> {
   const dataURL = canvas.toDataURL("image/png");
   const base64Data = dataURL.replace(/^data:image\/png;base64,/, "");
 
-  writeFile(fileName, base64Data, "base64", (err) => {
-    if (err) {
-      console.error("Error saving the image:", err);
-    } else {
-      console.log(`Canvas output saved as ${fileName}`);
-    }
+  return new Promise((resolve, reject) => {
+    writeFile(filename, base64Data, "base64", (err) => {
+      if (err) {
+        console.error("Error saving the image:", err);
+        reject(err);
+      } else {
+        console.log(`Canvas output saved as ${filename}`);
+        resolve();
+      }
+    });
   });
 }
