@@ -58,7 +58,8 @@ const numberOfTriangles = 500;
 const populationSize = 100;
 const generations = 50;
 const initialMutationRate = 0.15;
-const eliteSize = 10;
+const selectSize = 20
+const eliteSize = 5;
 
 let mutationRate = initialMutationRate;
 
@@ -85,7 +86,7 @@ for (let generation = 0; generation <= generations; generation++) {
   population = evaluateFitness(population);
 
   // Select Best Individuals
-  const bestIndividuals = selectBestIndividuals(population, eliteSize);
+  const bestIndividuals = selectBestIndividuals(population, selectSize);
   const bestInGeneration = bestIndividuals[0];
 
   if (generation % 10 === 0) {
@@ -120,8 +121,8 @@ for (let generation = 0; generation <= generations; generation++) {
 //   return population;
 // }
 
-function selectBestIndividuals(population: Individual[], eliteSize: number): Individual[] {
-  return population.sort((a, b) => a.fitness - b.fitness).slice(0, eliteSize);
+function selectBestIndividuals(population: Individual[], selectSize: number): Individual[] {
+  return population.sort((a, b) => a.fitness - b.fitness).slice(0, selectSize);
 }
 
 function generateOffspring(
@@ -134,7 +135,7 @@ function generateOffspring(
 
   // Preserve the elite individuals
   for (let i = 0; i < eliteSize; i++) {
-    offspring.push(bestIndividuals[i]);
+    offspring.push(deepCopy(bestIndividuals[i]));
   }
 
   // Generate the rest of the population through crossover and mutation
