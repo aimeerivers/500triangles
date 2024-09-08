@@ -16,7 +16,7 @@ interface Individual {
   fitness: number;
 }
 
-await appendLog(["Generation", "Fitness", "Mutation rate"], "log.csv");
+await appendLog(["Generation", "Fitness", "Best fitness", "Mutation rate"], "log.csv");
 
 const { window } = new JSDOM(`
 <!DOCTYPE html>
@@ -58,7 +58,7 @@ const numberOfTriangles = 500;
 const populationSize = 100;
 const generations = 50;
 const initialMutationRate = 0.15;
-const selectSize = 20
+const selectSize = 20;
 const eliteSize = 5;
 
 let mutationRate = initialMutationRate;
@@ -103,10 +103,14 @@ for (let generation = 0; generation <= generations; generation++) {
     drawIndividual(bestYet);
     await saveOutputImage(canvas, "best_yet.png");
     await saveOutputJSON(bestYet, "best_yet.json");
-    await appendLog([generation, bestYetFitness, mutationRate], "log.csv");
     mutationRate *= 0.999; // Decrease mutation rate by 0.1%
     console.log("Reducing mutation rate...", mutationRate);
+  } else {
+    mutationRate *= 1.001; // Increase mutation rate by 0.1%
+    console.log("Increasing mutation rate...", mutationRate);
   }
+
+  await appendLog([generation, bestInGeneration.fitness, bestYetFitness, mutationRate], "log.csv");
 
   // Generate Offspring
   population = generateOffspring([bestYet, ...bestIndividuals], populationSize, mutationRate, eliteSize);
@@ -165,7 +169,6 @@ function crossover(parent1: Individual, parent2: Individual): Individual {
 function mutate(individual: Individual, mutationRate: number): void {
   for (let i = 0; i < individual.triangles.length; i++) {
     if (Math.random() < mutationRate) {
-
       const dice = Math.random();
       if (dice < 0.5) {
         // Small perturbations to the existing points and color
