@@ -56,12 +56,12 @@ const numberOfTriangles = 500;
 
 // Genetic Algorithm Parameters
 const populationSize = 100;
-const generations = 200;
-const initialMutationRate = 0.3;
+const generations = 9999;
+const initialMutationRate = 0.5;
 const selectSize = 50;
 const eliteSize = 5;
 const tournamentSize = 5;
-const usePreviousBest = true;
+const usePreviousBest = false;
 
 let mutationRate = initialMutationRate;
 
