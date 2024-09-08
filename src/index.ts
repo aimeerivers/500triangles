@@ -57,7 +57,7 @@ const numberOfTriangles = 500;
 // Genetic Algorithm Parameters
 const populationSize = 100;
 const generations = 200;
-const initialMutationRate = 0.2;
+const initialMutationRate = 0.1;
 const eliteSize = 10;
 
 let mutationRate = initialMutationRate;
