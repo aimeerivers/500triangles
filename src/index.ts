@@ -1,5 +1,7 @@
 import { loadImage } from "canvas";
+import { readdir, readFile } from "fs/promises";
 import { JSDOM } from "jsdom";
+import path from "path";
 
 import { calculateMSE } from "./fitness.js";
 import { appendLog, Color, Point, randomColor, randomPoint, saveOutputImage, saveOutputJSON } from "./util.js";
@@ -60,10 +62,23 @@ const eliteSize = 10;
 
 let mutationRate = initialMutationRate;
 
-let population: Individual[] = generateInitialPopulation(populationSize);
-
 let bestYet: Individual = { triangles: [], fitness: Infinity };
 
+// let population: Individual[] = generateInitialPopulation(populationSize);
+let population: Individual[] = [];
+population.push(deepCopy(bestYet));
+
+const bestIndividuals = await loadBestIndividualsFromFolders("best");
+for (const individual of bestIndividuals) {
+  population.push(deepCopy(individual));
+}
+
+while (population.length < populationSize) {
+  const triangles = generateRandomTriangles(numberOfTriangles);
+  population.push({ triangles, fitness: Infinity });
+}
+
+// Evolution
 for (let generation = 0; generation < generations; generation++) {
   console.log("\nGeneration", generation + 1);
   // Evaluate Fitness
@@ -95,14 +110,14 @@ for (let generation = 0; generation < generations; generation++) {
   population = generateOffspring([bestYet, ...bestIndividuals], populationSize, mutationRate, eliteSize);
 }
 
-function generateInitialPopulation(size: number): Individual[] {
-  const population: Individual[] = [];
-  for (let i = 0; i < size; i++) {
-    const triangles = generateRandomTriangles(numberOfTriangles);
-    population.push({ triangles, fitness: Infinity });
-  }
-  return population;
-}
+// function generateInitialPopulation(size: number): Individual[] {
+//   const population: Individual[] = [];
+//   for (let i = 0; i < size; i++) {
+//     const triangles = generateRandomTriangles(numberOfTriangles);
+//     population.push({ triangles, fitness: Infinity });
+//   }
+//   return population;
+// }
 
 function selectBestIndividuals(population: Individual[], eliteSize: number): Individual[] {
   return population.sort((a, b) => a.fitness - b.fitness).slice(0, eliteSize);
@@ -233,4 +248,24 @@ function drawTriangle(triangle: Triangle): void {
 
 function deepCopy(individual: Individual): Individual {
   return JSON.parse(JSON.stringify(individual));
+}
+
+async function loadBestIndividualsFromFolders(folderPath: string): Promise<Individual[]> {
+  const subFolders = await readdir(folderPath, { withFileTypes: true });
+  const bestIndividuals: Individual[] = [];
+
+  for (const subFolder of subFolders) {
+    if (subFolder.isDirectory()) {
+      const bestYetPath = path.join(folderPath, subFolder.name, "best_yet.json");
+      try {
+        const bestYetData = await readFile(bestYetPath, "utf-8");
+        const bestIndividual = JSON.parse(bestYetData);
+        bestIndividuals.push(bestIndividual);
+      } catch (error) {
+        console.error(`Error reading ${bestYetPath}:`, error);
+      }
+    }
+  }
+
+  return bestIndividuals;
 }
