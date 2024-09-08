@@ -56,28 +56,32 @@ const numberOfTriangles = 500;
 
 // Genetic Algorithm Parameters
 const populationSize = 100;
-const generations = 50;
+const generations = 200;
 const initialMutationRate = 0.1;
 const selectSize = 50;
 const eliteSize = 5;
 const tournamentSize = 5;
+const usePreviousBest = false;
 
 let mutationRate = initialMutationRate;
 
 let bestYet: Individual = { triangles: [], fitness: Infinity };
 let bestYetFitness = Infinity;
 
-// let population: Individual[] = generateInitialPopulation(populationSize);
 let population: Individual[] = [];
 
-const bestIndividuals = await loadBestIndividualsFromFolders("best");
-for (const individual of bestIndividuals) {
-  population.push(deepCopy(individual));
-}
+if (usePreviousBest) {
+  const bestIndividuals = await loadBestIndividualsFromFolders("best");
+  for (const individual of bestIndividuals) {
+    population.push(deepCopy(individual));
+  }
 
-while (population.length < populationSize) {
-  const triangles = generateRandomTriangles(numberOfTriangles);
-  population.push({ triangles, fitness: Infinity });
+  while (population.length < populationSize) {
+    const triangles = generateRandomTriangles(numberOfTriangles);
+    population.push({ triangles, fitness: Infinity });
+  }
+} else {
+  population = generateInitialPopulation(populationSize);
 }
 
 // Evolution
@@ -117,14 +121,14 @@ for (let generation = 0; generation <= generations; generation++) {
   population = generateOffspring([bestYet, ...bestIndividuals], populationSize, mutationRate, eliteSize);
 }
 
-// function generateInitialPopulation(size: number): Individual[] {
-//   const population: Individual[] = [];
-//   for (let i = 0; i < size; i++) {
-//     const triangles = generateRandomTriangles(numberOfTriangles);
-//     population.push({ triangles, fitness: Infinity });
-//   }
-//   return population;
-// }
+function generateInitialPopulation(size: number): Individual[] {
+  const population: Individual[] = [];
+  for (let i = 0; i < size; i++) {
+    const triangles = generateRandomTriangles(numberOfTriangles);
+    population.push({ triangles, fitness: Infinity });
+  }
+  return population;
+}
 
 function selectBestIndividuals(population: Individual[], selectSize: number): Individual[] {
   return population.sort((a, b) => a.fitness - b.fitness).slice(0, selectSize);
