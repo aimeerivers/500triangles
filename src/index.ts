@@ -57,7 +57,7 @@ const numberOfTriangles = 500;
 // Genetic Algorithm Parameters
 const populationSize = 100;
 const generations = 50;
-const initialMutationRate = 0.15;
+const initialMutationRate = 0.1;
 const selectSize = 20;
 const eliteSize = 5;
 
@@ -103,10 +103,10 @@ for (let generation = 0; generation <= generations; generation++) {
     drawIndividual(bestYet);
     await saveOutputImage(canvas, "best_yet.png");
     await saveOutputJSON(bestYet, "best_yet.json");
-    mutationRate *= 0.999; // Decrease mutation rate by 0.1%
+    mutationRate *= 0.99; // Decrease mutation rate by 1%
     console.log("Reducing mutation rate...", mutationRate);
   } else {
-    mutationRate *= 1.001; // Increase mutation rate by 0.1%
+    mutationRate *= 1.01; // Increase mutation rate by 1%
     console.log("Increasing mutation rate...", mutationRate);
   }
 
