@@ -63,6 +63,7 @@ const eliteSize = 10;
 let mutationRate = initialMutationRate;
 
 let bestYet: Individual = { triangles: [], fitness: Infinity };
+let bestYetFitness = Infinity;
 
 // let population: Individual[] = generateInitialPopulation(populationSize);
 let population: Individual[] = [];
@@ -96,8 +97,9 @@ for (let generation = 0; generation <= generations; generation++) {
   console.log("Best Fitness Score", bestInGeneration.fitness);
 
   // Preserve the best individual from all generations
-  if (bestInGeneration.fitness <= bestYet.fitness) {
+  if (bestInGeneration.fitness < bestYetFitness) {
     bestYet = deepCopy(bestInGeneration);
+    bestYetFitness = bestYet.fitness;
     drawIndividual(bestYet);
     await saveOutputImage(canvas, "best_yet.png");
     await saveOutputJSON(bestYet, "best_yet.json");
