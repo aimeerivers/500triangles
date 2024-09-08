@@ -53,7 +53,7 @@ referenceCtx.drawImage(referenceImageSource, 0, 0, referenceImage.width, referen
 const numberOfTriangles = 500;
 
 // Genetic Algorithm Parameters
-const populationSize = 50;
+const populationSize = 100;
 const generations = 9999;
 const initialMutationRate = 0.3;
 const eliteSize = 10;
