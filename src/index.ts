@@ -165,12 +165,15 @@ function crossover(parent1: Individual, parent2: Individual): Individual {
 function mutate(individual: Individual, mutationRate: number): void {
   for (let i = 0; i < individual.triangles.length; i++) {
     if (Math.random() < mutationRate) {
-      if (Math.random() < 0.5) {
+
+      const dice = Math.random();
+      if (dice < 0.5) {
         // Small perturbations to the existing points and color
         for (const point of individual.triangles[i].points) {
           point.x += Math.floor(Math.random() * 21) - 10; // Adjust x by -10 to 10
           point.y += Math.floor(Math.random() * 21) - 10; // Adjust y by -10 to 10
         }
+      } else if (dice < 0.75) {
         individual.triangles[i].color.red = Math.min(
           255,
           Math.max(0, individual.triangles[i].color.red + Math.floor(Math.random() * 21) - 10)
