@@ -57,7 +57,7 @@ const numberOfTriangles = 500;
 // Genetic Algorithm Parameters
 const populationSize = 100;
 const generations = 200;
-const initialMutationRate = 0.1;
+const initialMutationRate = 0.15;
 const eliteSize = 10;
 
 let mutationRate = initialMutationRate;
@@ -102,7 +102,7 @@ for (let generation = 0; generation <= generations; generation++) {
     drawIndividual(bestYet);
     await saveOutputImage(canvas, "best_yet.png");
     await saveOutputJSON(bestYet, "best_yet.json");
-    await appendLog([generation, bestYet.fitness, mutationRate], "log.csv");
+    await appendLog([generation, bestYetFitness, mutationRate], "log.csv");
     mutationRate *= 0.999; // Decrease mutation rate by 0.1%
     console.log("Reducing mutation rate...", mutationRate);
   }
@@ -137,19 +137,13 @@ function generateOffspring(
     offspring.push(bestIndividuals[i]);
   }
 
-  // Generate the rest of the population, leave some room for new individuals
-  while (offspring.length < populationSize - 10) {
+  // Generate the rest of the population through crossover and mutation
+  while (offspring.length < populationSize) {
     const parent1 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
     const parent2 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
     const child = crossover(parent1, parent2);
     mutate(child, mutationRate);
     offspring.push(child);
-  }
-
-  // Add some brand new ones, they may be better
-  while (offspring.length < populationSize) {
-    const triangles = generateRandomTriangles(numberOfTriangles);
-    offspring.push({ triangles, fitness: Infinity });
   }
 
   return offspring;
