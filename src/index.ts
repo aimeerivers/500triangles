@@ -65,19 +65,18 @@ let mutationRate = initialMutationRate;
 let bestYet: Individual = { triangles: [], fitness: Infinity };
 let bestYetFitness = Infinity;
 
-// let population: Individual[] = generateInitialPopulation(populationSize);
-let population: Individual[] = [];
-population.push(deepCopy(bestYet));
+let population: Individual[] = generateInitialPopulation(populationSize);
+// let population: Individual[] = [];
 
-const bestIndividuals = await loadBestIndividualsFromFolders("best");
-for (const individual of bestIndividuals) {
-  population.push(deepCopy(individual));
-}
+// const bestIndividuals = await loadBestIndividualsFromFolders("best");
+// for (const individual of bestIndividuals) {
+//   population.push(deepCopy(individual));
+// }
 
-while (population.length < populationSize) {
-  const triangles = generateRandomTriangles(numberOfTriangles);
-  population.push({ triangles, fitness: Infinity });
-}
+// while (population.length < populationSize) {
+//   const triangles = generateRandomTriangles(numberOfTriangles);
+//   population.push({ triangles, fitness: Infinity });
+// }
 
 // Evolution
 for (let generation = 0; generation <= generations; generation++) {
@@ -112,14 +111,14 @@ for (let generation = 0; generation <= generations; generation++) {
   population = generateOffspring([bestYet, ...bestIndividuals], populationSize, mutationRate, eliteSize);
 }
 
-// function generateInitialPopulation(size: number): Individual[] {
-//   const population: Individual[] = [];
-//   for (let i = 0; i < size; i++) {
-//     const triangles = generateRandomTriangles(numberOfTriangles);
-//     population.push({ triangles, fitness: Infinity });
-//   }
-//   return population;
-// }
+function generateInitialPopulation(size: number): Individual[] {
+  const population: Individual[] = [];
+  for (let i = 0; i < size; i++) {
+    const triangles = generateRandomTriangles(numberOfTriangles);
+    population.push({ triangles, fitness: Infinity });
+  }
+  return population;
+}
 
 function selectBestIndividuals(population: Individual[], eliteSize: number): Individual[] {
   return population.sort((a, b) => a.fitness - b.fitness).slice(0, eliteSize);
