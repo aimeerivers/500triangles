@@ -79,8 +79,8 @@ while (population.length < populationSize) {
 }
 
 // Evolution
-for (let generation = 0; generation < generations; generation++) {
-  console.log("\nGeneration", generation + 1);
+for (let generation = 0; generation <= generations; generation++) {
+  console.log("\nGeneration", generation);
   // Evaluate Fitness
   population = evaluateFitness(population);
 
