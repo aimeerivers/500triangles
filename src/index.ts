@@ -61,7 +61,7 @@ const initialMutationRate = 0.1;
 const selectSize = 50;
 const eliteSize = 5;
 const tournamentSize = 5;
-const usePreviousBest = false;
+const usePreviousBest = true;
 
 let mutationRate = initialMutationRate;
 
