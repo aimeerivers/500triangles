@@ -156,11 +156,20 @@ function generateOffspring(
 
 function crossover(parent1: Individual, parent2: Individual): Individual {
   const triangles: Triangle[] = [];
+  const dice = Math.random();
   for (let i = 0; i < parent1.triangles.length; i++) {
-    if (Math.random() < 0.5) {
-      triangles.push(parent1.triangles[i]);
+    if (dice < 0.5) {
+      if (parent1.triangles[i].points[0].x < canvas.width / 2) {
+        triangles.push(parent1.triangles[i]);
+      } else {
+        triangles.push(parent2.triangles[i]);
+      }
     } else {
-      triangles.push(parent2.triangles[i]);
+      if (parent1.triangles[i].points[0].x > canvas.width / 2) {
+        triangles.push(parent1.triangles[i]);
+      } else {
+        triangles.push(parent2.triangles[i]);
+      }
     }
   }
   return { triangles, fitness: Infinity };
