@@ -58,8 +58,9 @@ const numberOfTriangles = 500;
 const populationSize = 100;
 const generations = 50;
 const initialMutationRate = 0.1;
-const selectSize = 20;
+const selectSize = 50;
 const eliteSize = 5;
+const tournamentSize = 5;
 
 let mutationRate = initialMutationRate;
 
@@ -144,8 +145,8 @@ function generateOffspring(
 
   // Generate the rest of the population through crossover and mutation
   while (offspring.length < populationSize) {
-    const parent1 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
-    const parent2 = bestIndividuals[Math.floor(Math.random() * bestIndividuals.length)];
+    const parent1 = tournamentSelection(bestIndividuals, tournamentSize);
+    const parent2 = tournamentSelection(bestIndividuals, tournamentSize);
     const child = crossover(parent1, parent2);
     mutate(child, mutationRate);
     offspring.push(child);
@@ -279,4 +280,21 @@ async function loadBestIndividualsFromFolders(folderPath: string): Promise<Indiv
   }
 
   return bestIndividuals;
+}
+
+function tournamentSelection(population: Individual[], tournamentSize: number): Individual {
+  const tournamentParticipants = [];
+  for (let i = 0; i < tournamentSize; i++) {
+    const randomIndex = Math.floor(Math.random() * population.length);
+    tournamentParticipants.push(population[randomIndex]);
+  }
+
+  let bestIndividual = tournamentParticipants[0];
+  for (const participant of tournamentParticipants) {
+    if (participant.fitness < bestIndividual.fitness) {
+      bestIndividual = participant;
+    }
+  }
+
+  return deepCopy(bestIndividual);
 }
