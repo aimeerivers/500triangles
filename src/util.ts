@@ -1,6 +1,6 @@
 import { appendFile, writeFile } from "fs/promises";
 
-const outputDir = "output";
+const outputDir = "enby";
 
 export type Color = {
   red: number;
