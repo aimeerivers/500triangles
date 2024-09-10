@@ -89,28 +89,13 @@ const initialMutationRate = 0.25;
 const selectSize = 50;
 const eliteSize = 2;
 const tournamentSize = 5;
-const usePreviousBest = true;
 
 let mutationRate = initialMutationRate;
 
 let bestYet: Individual = { triangles: [], fitness: Infinity };
 let bestYetFitness = Infinity;
 
-let population: Individual[] = [];
-
-if (usePreviousBest) {
-  const bestIndividuals = await loadBestIndividualsFromFolders("best_enby");
-  for (const individual of bestIndividuals) {
-    population.push(deepCopy(individual));
-  }
-
-  while (population.length < populationSize) {
-    const triangles = generateRandomTriangles(numberOfTriangles);
-    population.push({ triangles, fitness: Infinity });
-  }
-} else {
-  population = generateInitialPopulation(populationSize);
-}
+let population: Individual[] = generateInitialPopulation(populationSize);
 
 // Evolution
 for (let generation = 0; generation <= generations; generation++) {
