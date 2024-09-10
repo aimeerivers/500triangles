@@ -108,16 +108,11 @@ for (let generation = 0; generation <= generations; generation++) {
     drawIndividual(bestYet);
     await saveOutputImage(canvas, "best_yet.png");
     await saveOutputJSON(bestYet, "best_yet.json");
-    mutationRate *= 0.999; // Decrease mutation rate
-    console.log("Reducing mutation rate...", mutationRate);
+    mutationRate *= 1.001; // Increase mutation rate
+    console.log("Increasing mutation rate...", mutationRate);
   } else {
-    if (mutationRate < initialMutationRate) {
-      mutationRate *= 1.001; // Increase mutation rate
-      console.log("Increasing mutation rate...", mutationRate);
-    } else {
-      mutationRate = mutationRate / 2;
-      console.log("Drastically reducing mutation rate...", mutationRate);
-    }
+    mutationRate = mutationRate / 2;
+    console.log("Drastically reducing mutation rate...", mutationRate);
   }
 
   await appendLog([generation, bestInGeneration.fitness, bestYetFitness, mutationRate], "log.csv");
