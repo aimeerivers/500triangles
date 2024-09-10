@@ -1,10 +1,12 @@
 import { loadImage } from "canvas";
+import { constants } from "fs";
 import { readdir, readFile } from "fs/promises";
 import { JSDOM } from "jsdom";
 import path from "path";
+import { mkdir, access } from "fs/promises";
 
 import { calculateMSE } from "./fitness.js";
-import { appendLog, Color, Point, randomColor, randomPoint, saveOutputImage, saveOutputJSON } from "./util.js";
+import { appendLog, startLog, Color, Point, randomColor, randomPoint, saveOutputImage, saveOutputJSON } from "./util.js";
 
 interface Triangle {
   points: Point[];
@@ -16,7 +18,25 @@ interface Individual {
   fitness: number;
 }
 
-await appendLog(["Generation", "Fitness", "Best fitness", "Mutation rate"], "log.csv");
+const folder = process.argv[2];
+
+if (!folder) {
+  throw new Error("Please provide a folder name as an argument.");
+}
+
+await mkdir(folder, { recursive: true });
+
+const referenceImagePath = path.join(folder, 'reference.png');
+
+try {
+  await access(referenceImagePath, constants.F_OK);
+} catch (error) {
+  throw new Error(`reference.png not found in the '${folder}' folder`);
+}
+
+const referenceImage = await loadImage(referenceImagePath);
+
+await startLog(["Generation", "Fitness", "Best fitness", "Mutation rate"], folder, "log.csv");
 
 const { window } = new JSDOM(`
 <!DOCTYPE html>
@@ -41,7 +61,6 @@ const ctx = canvas.getContext("2d")!;
 const referenceCanvas = document.getElementById("referenceCanvas") as HTMLCanvasElement;
 const referenceCtx = referenceCanvas.getContext("2d")!;
 
-const referenceImage = await loadImage("enby_reference.png");
 const referenceImageSource = referenceImage as unknown as CanvasImageSource;
 
 canvas.width = referenceImage.width;
@@ -96,7 +115,7 @@ for (let generation = 0; generation <= generations; generation++) {
 
   if (generation % 10 === 0) {
     drawIndividual(bestInGeneration);
-    await saveOutputImage(canvas, `generation_${generation.toString().padStart(4, "0")}.png`);
+    await saveOutputImage(canvas, folder, `generation_${generation.toString().padStart(4, "0")}.png`);
   }
 
   console.log("Best Fitness Score", bestInGeneration.fitness);
@@ -106,8 +125,8 @@ for (let generation = 0; generation <= generations; generation++) {
     bestYet = deepCopy(bestInGeneration);
     bestYetFitness = bestYet.fitness;
     drawIndividual(bestYet);
-    await saveOutputImage(canvas, "best_yet.png");
-    await saveOutputJSON(bestYet, "best_yet.json");
+    await saveOutputImage(canvas, folder, "best_yet.png");
+    await saveOutputJSON(bestYet, folder, "best_yet.json");
     mutationRate *= 1.01; // Increase mutation rate
     console.log("Increasing mutation rate...", mutationRate);
   } else {
@@ -115,7 +134,7 @@ for (let generation = 0; generation <= generations; generation++) {
     console.log("Drastically reducing mutation rate...", mutationRate);
   }
 
-  await appendLog([generation, bestInGeneration.fitness, bestYetFitness, mutationRate], "log.csv");
+  await appendLog([generation, bestInGeneration.fitness, bestYetFitness, mutationRate], folder, "log.csv");
 
   // Generate Offspring
   population = generateOffspring(bestIndividuals, populationSize, mutationRate, eliteSize);

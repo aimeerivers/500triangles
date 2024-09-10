@@ -1,7 +1,5 @@
 import { appendFile, writeFile } from "fs/promises";
 
-const outputDir = "enby";
-
 export type Color = {
   red: number;
   green: number;
@@ -30,18 +28,23 @@ export function randomColor(): Color {
   };
 }
 
-export async function saveOutputImage(canvas: HTMLCanvasElement, filename: string): Promise<void> {
+export async function saveOutputImage(canvas: HTMLCanvasElement, folder: string, filename: string): Promise<void> {
   const dataURL = canvas.toDataURL("image/png");
   const base64Data = dataURL.replace(/^data:image\/png;base64,/, "");
 
-  await writeFile(`${outputDir}/${filename}`, base64Data, "base64");
+  await writeFile(`${folder}/${filename}`, base64Data, "base64");
 }
 
-export async function saveOutputJSON(data: unknown, filename: string): Promise<void> {
-  await writeFile(`${outputDir}/${filename}`, JSON.stringify(data, null, 2));
+export async function saveOutputJSON(data: unknown, folder: string, filename: string): Promise<void> {
+  await writeFile(`${folder}/${filename}`, JSON.stringify(data, null, 2));
 }
 
-export async function appendLog(data: any[], filename: string): Promise<void> {
+export async function appendLog(data: any[], folder: string, filename: string): Promise<void> {
   const logLine = data.join(",") + "\n";
-  await appendFile(`${outputDir}/${filename}`, logLine);
+  await appendFile(`${folder}/${filename}`, logLine);
+}
+
+export async function startLog(data: any[], folder: string, filename: string): Promise<void> {
+  const logLine = data.join(",") + "\n";
+  await writeFile(`${folder}/${filename}`, logLine);
 }
