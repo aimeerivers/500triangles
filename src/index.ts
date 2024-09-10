@@ -136,6 +136,11 @@ for (let generation = 0; generation <= generations; generation++) {
 
   await appendLog([generation, bestInGeneration.fitness, bestYetFitness, mutationRate], folder, "log.csv");
 
+  if (mutationRate === 0) {
+    console.log("Mutation rate is 0. Stopping evolution.");
+    break;
+  }
+
   // Generate Offspring
   population = generateOffspring(bestIndividuals, populationSize, mutationRate, eliteSize);
 }
