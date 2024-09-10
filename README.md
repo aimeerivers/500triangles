@@ -4,12 +4,31 @@ Generate any image using 500 triangles and a genetic algorithm
 
 This is me just playing with genetic algorithms.
 
-Reference image:
+## Usage
 
-![Reference image](./reference_image.png)
+    npm install
+    npm run build
 
-Best solution so far:
+Add an image called `reference.png` into a folder and run this on that folder
 
-![Best solution](./canvas_output.png)
+    npm run start [folder]
 
-Blog post coming soon.
+You will see an output image every 10 generations, and a CSV log file so you can track how the fitness is progressing, and how the mutation rate is changing.
+
+## Examples
+
+### Skanderborg lake
+
+| Reference                                             | Best                                                     |
+| ----------------------------------------------------- | -------------------------------------------------------- |
+| ![Skanderborg reference](./skanderborg/reference.png) | ![Skanderborg best solution](./skanderborg/best_yet.png) |
+
+### Non-binary flag
+
+| Reference                               | Best                                       |
+| --------------------------------------- | ------------------------------------------ |
+| ![Enby reference](./enby/reference.png) | ![Enby best solution](./enby/best_yet.png) |
+
+## More details
+
+I have a blog post coming soon.
