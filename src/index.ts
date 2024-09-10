@@ -1,12 +1,21 @@
 import { loadImage } from "canvas";
 import { constants } from "fs";
 import { readdir, readFile } from "fs/promises";
+import { access, mkdir } from "fs/promises";
 import { JSDOM } from "jsdom";
 import path from "path";
-import { mkdir, access } from "fs/promises";
 
 import { calculateMSE } from "./fitness.js";
-import { appendLog, startLog, Color, Point, randomColor, randomPoint, saveOutputImage, saveOutputJSON } from "./util.js";
+import {
+  appendLog,
+  Color,
+  Point,
+  randomColor,
+  randomPoint,
+  saveOutputImage,
+  saveOutputJSON,
+  startLog,
+} from "./util.js";
 
 interface Triangle {
   points: Point[];
@@ -26,7 +35,7 @@ if (!folder) {
 
 await mkdir(folder, { recursive: true });
 
-const referenceImagePath = path.join(folder, 'reference.png');
+const referenceImagePath = path.join(folder, "reference.png");
 
 try {
   await access(referenceImagePath, constants.F_OK);
