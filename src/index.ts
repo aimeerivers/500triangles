@@ -61,7 +61,7 @@ const initialMutationRate = 0.1;
 const selectSize = 50;
 const eliteSize = 2;
 const tournamentSize = 5;
-const usePreviousBest = false;
+const usePreviousBest = true;
 
 let mutationRate = initialMutationRate;
 
@@ -71,7 +71,7 @@ let bestYetFitness = Infinity;
 let population: Individual[] = [];
 
 if (usePreviousBest) {
-  const bestIndividuals = await loadBestIndividualsFromFolders("best");
+  const bestIndividuals = await loadBestIndividualsFromFolders("best_enby");
   for (const individual of bestIndividuals) {
     population.push(deepCopy(individual));
   }
