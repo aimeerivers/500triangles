@@ -57,7 +57,7 @@ const numberOfTriangles = 500;
 // Genetic Algorithm Parameters
 const populationSize = 100;
 const generations = 9999;
-const initialMutationRate = 0.1;
+const initialMutationRate = 0.25;
 const selectSize = 50;
 const eliteSize = 2;
 const tournamentSize = 5;
@@ -108,7 +108,7 @@ for (let generation = 0; generation <= generations; generation++) {
     drawIndividual(bestYet);
     await saveOutputImage(canvas, "best_yet.png");
     await saveOutputJSON(bestYet, "best_yet.json");
-    mutationRate *= 1.001; // Increase mutation rate
+    mutationRate *= 1.01; // Increase mutation rate
     console.log("Increasing mutation rate...", mutationRate);
   } else {
     mutationRate = mutationRate / 2;
@@ -184,13 +184,13 @@ function mutate(individual: Individual, mutationRate: number): void {
   for (let i = 0; i < individual.triangles.length; i++) {
     if (Math.random() < mutationRate) {
       const dice = Math.random();
-      if (dice < 0.33) {
+      if (dice < 0.4) {
         // Small perturbations to the existing points and color
         for (const point of individual.triangles[i].points) {
           point.x += Math.floor(Math.random() * 21) - 10; // Adjust x by -10 to 10
           point.y += Math.floor(Math.random() * 21) - 10; // Adjust y by -10 to 10
         }
-      } else if (dice < 0.66) {
+      } else if (dice < 0.8) {
         individual.triangles[i].color.red = Math.min(
           255,
           Math.max(0, individual.triangles[i].color.red + Math.floor(Math.random() * 21) - 10)
