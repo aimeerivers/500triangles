@@ -19,13 +19,13 @@ You will see an output image every 10 generations, and a CSV log file so you can
 
 ### Skanderborg lake
 
-| Reference                                             | Best                                                     |
+| Reference image                                       | Best triangle replica created                            |
 | ----------------------------------------------------- | -------------------------------------------------------- |
 | ![Skanderborg reference](./skanderborg/reference.png) | ![Skanderborg best solution](./skanderborg/best_yet.png) |
 
 ### Non-binary flag
 
-| Reference                               | Best                                       |
+| Reference image                         | Best triangle replica created              |
 | --------------------------------------- | ------------------------------------------ |
 | ![Enby reference](./enby/reference.png) | ![Enby best solution](./enby/best_yet.png) |
 
