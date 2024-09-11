@@ -11,5 +11,5 @@ while true; do
       git push origin updates;
     
     # Pause for 1 hour (3600 seconds)
-    sleep 60
+    sleep 3600;
 done
