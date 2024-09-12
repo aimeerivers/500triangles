@@ -28,6 +28,7 @@ You will see an output image every 10 generations, and a CSV log file so you can
 | ![Heartstopper reference](./heartstopper/reference.png)     | ![Heartstopper best solution](./heartstopper/best_yet.png)     |
 | ![Enby reference](./enby/reference.png)                     | ![Enby best solution](./enby/best_yet.png)                     |
 | ![Pride progress reference](./pride-progress/reference.png) | ![Pride progress best solution](./pride-progress/best_yet.png) |
+| ![Pride original reference](./pride-original/reference.png) | ![Pride original best solution](./pride-original/best_yet.png) |
 
 ## More details
 
