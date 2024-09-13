@@ -5,10 +5,10 @@ time=$(date "+%Y-%m-%d %H:%M");
 while true; do
     time=$(date "+%Y-%m-%d %H:%M");
 
-    git checkout updates && \
+    git checkout pride && \
       git add . && \
       git commit -m "chore: update progress at $time" && \
-      git push origin updates;
+      git push origin pride;
     
     # Pause for 1 hour (3600 seconds)
     sleep 3600;
