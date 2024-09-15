@@ -30,4 +30,4 @@ You will see an output image every 10 generations, and a CSV log file so you can
 
 ## More details
 
-I have a blog post coming soon.
+I wrote a blog post about this: [Playing with genetic algorithms](https://www.aimeerivers.com/2024/09/15/playing-with-genetic-algorithms.html).
