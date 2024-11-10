@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/jsdom": "21.1.7",
-    "eslint-config-plus-prettier": "3.0.0"
+    "eslint-config-plus-prettier": "4.0.0"
   },
-  "prettier": "eslint-config-plus-prettier/.prettierrc.json"
+  "prettier": "eslint-config-plus-prettier/prettier"
 }
