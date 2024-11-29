@@ -39,7 +39,7 @@ const referenceImagePath = path.join(folder, "reference.png");
 
 try {
   await access(referenceImagePath, constants.F_OK);
-} catch (error) {
+} catch {
   throw new Error(`reference.png not found in the '${folder}' folder`);
 }
 
@@ -284,7 +284,7 @@ function deepCopy(individual: Individual): Individual {
   return JSON.parse(JSON.stringify(individual));
 }
 
-async function loadBestIndividualsFromFolders(folderPath: string): Promise<Individual[]> {
+async function _loadBestIndividualsFromFolders(folderPath: string): Promise<Individual[]> {
   const subFolders = await readdir(folderPath, { withFileTypes: true });
   const bestIndividuals: Individual[] = [];
 
