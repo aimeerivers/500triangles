@@ -25,12 +25,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "canvas": "2.11.2",
-    "jsdom": "25.0.1"
+    "canvas": "3.1.0",
+    "jsdom": "26.1.0"
   },
   "devDependencies": {
     "@types/jsdom": "21.1.7",
-    "eslint-config-plus-prettier": "4.1.2"
+    "eslint-config-plus-prettier": "4.1.9"
   },
   "prettier": "eslint-config-plus-prettier/prettier"
 }
